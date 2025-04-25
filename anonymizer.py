@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import argparse 
 
+
 def load_data(path):
     df = pd.read_csv(path)
 
