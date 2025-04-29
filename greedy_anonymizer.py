@@ -115,6 +115,35 @@ def greedy_anonymize(df, quasi_identifiers, k):
 
     return df
 
+
+def is_l_diverse(df, quasi_identifiers, sensitive_attr, l):
+    """
+    Checks whether each group of quasi-identifiers contains at least l diverse sensitive attribute values.
+    """
+    grouped = df.groupby(quasi_identifiers)
+
+    for _, group in grouped:
+        unique_values = group[sensitive_attr].nunique()
+        if unique_values < l:
+            return False
+
+    return True
+
+def suppress_non_diverse_groups(df, quasi_identifiers, sensitive_attr, l):
+    """
+    Removes any equivalence class that doesn't satisfy l-diversity.
+    """
+    grouped = df.groupby(quasi_identifiers)
+    keep_indices = []
+
+    for _, group in grouped:
+        if group[sensitive_attr].nunique() >= l:
+            keep_indices.extend(group.index)
+
+    return df.loc[keep_indices].reset_index(drop=True)
+
+
+
 if __name__ == "__main__":
     import sys
 
@@ -124,14 +153,26 @@ if __name__ == "__main__":
 
     quasi_identifiers = ["age", "zip-code", "education", "sex"]
 
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         k = int(sys.argv[1])
+        l = int(sys.argv[2])
+    elif len(sys.argv) > 1:
+        k = int(sys.argv[1])
+        l = 2  # default
     else:
         k = 3
+        l = 2
+
 
     df = greedy_anonymize(df, quasi_identifiers, k)
+    df = suppress_non_diverse_groups(df, quasi_identifiers, 'income', l)
 
     print(df[["age", "zip-code", "education", "sex", "income"]].head())
 
-    print(f"🔒 Achieved k-anonymity with k={k}: {is_k_anonymous(df, quasi_identifiers, k)}")
+    print(f"Achieved k-anonymity with k={k}: {is_k_anonymous(df, quasi_identifiers, k)}")
+    print(f"Final l-diverse with l={l}: {is_l_diverse(df, quasi_identifiers, 'income', l)}")
+    print(f"Final row count after suppression: {len(df)}")
+
+
+
 
