@@ -173,6 +173,9 @@ if __name__ == "__main__":
     print(f"Final l-diverse with l={l}: {is_l_diverse(df, quasi_identifiers, 'income', l)}")
     print(f"Final row count after suppression: {len(df)}")
 
+    df.to_csv("anonymized_kl.csv", index=False)
+    print("Saved anonymized dataset to anonymized_kl.csv")
+
 
 
 
