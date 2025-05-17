@@ -42,15 +42,26 @@ This shows **no distortion** in this aggregate statistic — anonymization prese
 
 ## 4. Utility vs Privacy Tradeoff
 
-We simulated model performance under increasing privacy (higher `k` values):
+We compared how different privacy models affect the **mean age** statistic — a commonly used attribute in population analysis.
 
-![Privacy vs Utility](images/privacy_vs_utility.png)
+| Method               | Mean Age | Absolute Difference from Original |
+|----------------------|----------|-----------------------------------|
+| Original             | 38.58    | 0.00                              |
+| k-Anonymity (k=3)    | 38.97    | 0.39                              |
+| Differential Privacy | 37.31    | 1.27                              |
 
-As expected, increasing privacy slightly reduces model utility. This tradeoff is important when choosing privacy parameters.
+As expected:
+- **k-Anonymity** introduced slight distortion through generalization.
+- **Differential Privacy** added random noise via Laplace mechanism, leading to higher distortion but stronger formal privacy guarantees.
+
+We used an epsilon value of **1.0**, which is considered a moderate privacy budget.
+
+![DP vs k-Anonymity Chart](images/mean_age_comparison.png)
+
+This visualization clearly demonstrates the **trade-off between privacy strength and data utility**. While k-anonymity preserves structure better, differential privacy provides rigorous protection at the cost of precision.
 
 ---
 
-### ✅ Conclusion
+### ✅ Conclusion (update)
 
-Our anonymization pipeline preserved high utility while enforcing strong privacy constraints.  
-This evaluation confirms the effectiveness of generalization + suppression in real-world data protection scenarios.
+Our enhanced pipeline now supports both **identity-based anonymization (k-anonymity + l-diversity)** and **formal statistical privacy (differential privacy)**. This makes the tool more adaptable and robust for real-world use cases requiring varying privacy guarantees.
