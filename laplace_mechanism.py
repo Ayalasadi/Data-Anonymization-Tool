@@ -39,3 +39,11 @@ if __name__ == "__main__":
 
     print(f"Original mean age: {mean_age:.2f}")
     print(f"Noisy mean age (e={args.epsilon}, s={args.sensitivity}): {noisy_age:.2f}")
+
+#func wrapper
+def noisy_mean_age(df, epsilon=1.0, sensitivity=1.0):
+    """
+    Compute mean age with Laplace noise added.
+    """
+    mean_age = df["age"].mean()
+    return laplace_dp_mechanism(mean_age, sensitivity, epsilon)
